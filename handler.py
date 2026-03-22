@@ -2,6 +2,7 @@ import runpod
 import traceback
 import sys
 import os
+import base64
 import tempfile
 import requests
 import numpy as np
@@ -40,6 +41,13 @@ def download_file(url, suffix):
         r.raise_for_status()
         for chunk in r.iter_content(chunk_size=65536):
             tmp.write(chunk)
+    tmp.close()
+    return tmp.name
+
+
+def decode_base64_to_file(data, suffix):
+    tmp = tempfile.NamedTemporaryFile(suffix=suffix, delete=False)
+    tmp.write(base64.b64decode(data))
     tmp.close()
     return tmp.name
 
@@ -101,11 +109,11 @@ def handler(job):
     inp = job["input"]
 
     audio_url = inp.get("audio_url")
-    source_image_url = inp.get("source_image_url")
+    image_b64 = inp.get("source_image_base64")
     if not audio_url:
         return {"error": "audio_url is required"}
-    if not source_image_url:
-        return {"error": "source_image_url is required"}
+    if not image_b64:
+        return {"error": "source_image_base64 is required"}
 
     audio_path = None
     image_path = None
@@ -113,7 +121,7 @@ def handler(job):
 
     try:
         audio_path = download_file(audio_url, ".wav")
-        image_path = download_file(source_image_url, ".png")
+        image_path = decode_base64_to_file(image_b64, ".png")
 
         tmp_o = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
         tmp_o.close()

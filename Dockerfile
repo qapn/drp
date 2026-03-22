@@ -28,7 +28,7 @@ RUN pip install \
     huggingface-hub \
     --no-cache-dir
 
-RUN huggingface-cli download digital-avatar/ditto-talkinghead \
+RUN python -m huggingface_hub.cli download digital-avatar/ditto-talkinghead \
     --include "ditto_pytorch/*" "ditto_cfg/*" \
     --local-dir /app/checkpoints
 
