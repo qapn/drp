@@ -23,7 +23,7 @@ RUN pip install \
     einops \
     tqdm==4.67.1 \
     Cython==3.0.11 \
-    onnxruntime-gpu \
+    onnxruntime-gpu==1.19.0 \
     mediapipe \
     requests \
     runpod \
@@ -32,9 +32,8 @@ RUN pip install \
 
 RUN python -c "from huggingface_hub import snapshot_download; snapshot_download('digital-avatar/ditto-talkinghead', allow_patterns=['ditto_pytorch/*', 'ditto_cfg/*'], local_dir='/app/checkpoints')"
 
-RUN python -c "from core.utils.blend import blend_images_cy; print('ok')"
-
 ENV HF_HUB_OFFLINE=1
+ENV NUMBA_CPU_NAME=generic
 
 COPY handler.py /app/handler.py
 
