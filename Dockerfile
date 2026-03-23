@@ -28,9 +28,7 @@ RUN pip install \
     huggingface-hub \
     --no-cache-dir
 
-RUN python -m huggingface_hub.cli download digital-avatar/ditto-talkinghead \
-    --include "ditto_pytorch/*" "ditto_cfg/*" \
-    --local-dir /app/checkpoints
+RUN python -c "from huggingface_hub import snapshot_download; snapshot_download('digital-avatar/ditto-talkinghead', allow_patterns=['ditto_pytorch/*', 'ditto_cfg/*'], local_dir='/app/checkpoints')"
 
 RUN python -c "from core.utils.blend import blend_images_cy; print('ok')"
 
