@@ -1,6 +1,6 @@
 FROM runpod/pytorch:2.2.1-py3.10-cuda12.1.1-devel-ubuntu22.04
 
-RUN apt-get update && apt-get install -y ffmpeg libgl1 libgles2 git && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y ffmpeg libgl1 libgles2 libegl1 git && rm -rf /var/lib/apt/lists/*
 
 RUN pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 \
     --index-url https://download.pytorch.org/whl/cu121 --no-cache-dir
