@@ -27,6 +27,7 @@ RUN pip install \
     mediapipe \
     requests \
     runpod \
+    boto3 \
     huggingface-hub \
     --no-cache-dir
 

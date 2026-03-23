@@ -10,7 +10,7 @@ import numpy as np
 sys.path.insert(0, "/app/ditto-talkinghead")
 os.chdir("/app/ditto-talkinghead")
 
-from runpod.serverless.utils import rp_upload
+import boto3
 
 SDK = None
 run_fn = None
@@ -102,6 +102,22 @@ def build_setup_kwargs(inp):
     return sk
 
 
+def upload_to_r2(job_id, file_path):
+    s3 = boto3.client("s3",
+        endpoint_url=os.environ["BUCKET_ENDPOINT_URL"],
+        aws_access_key_id=os.environ["BUCKET_ACCESS_KEY_ID"],
+        aws_secret_access_key=os.environ["BUCKET_SECRET_ACCESS_KEY"],
+        region_name="auto",
+    )
+    bucket = os.environ["BUCKET_NAME"]
+    key = f"outputs/{job_id}.mp4"
+    s3.upload_file(file_path, bucket, key)
+    return s3.generate_presigned_url("get_object",
+        Params={"Bucket": bucket, "Key": key},
+        ExpiresIn=3600,
+    )
+
+
 def handler(job):
     if INIT_ERROR:
         return {"error": f"Model failed to load:\n{INIT_ERROR}"}
@@ -137,7 +153,7 @@ def handler(job):
         if not os.path.exists(out_path) or os.path.getsize(out_path) == 0:
             return {"error": "Inference produced no output"}
 
-        video_url = rp_upload.upload_image(job["id"], out_path)
+        video_url = upload_to_r2(job["id"], out_path)
 
         return {"video_url": video_url, "format": "mp4"}
 
