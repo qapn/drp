@@ -23,6 +23,7 @@ RUN pip install \
     einops \
     tqdm==4.67.1 \
     Cython==3.0.11 \
+    onnxruntime-gpu \
     requests \
     runpod \
     huggingface-hub \
