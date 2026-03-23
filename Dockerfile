@@ -24,6 +24,7 @@ RUN pip install \
     tqdm==4.67.1 \
     Cython==3.0.11 \
     onnxruntime-gpu \
+    mediapipe \
     requests \
     runpod \
     huggingface-hub \
